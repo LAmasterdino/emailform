@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Anmeldung</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f6f8;
+            color: #222;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 60px auto;
+            padding: 35px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        h1 {
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
+        .description {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #555;
+        }
+
+        button {
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 6px;
+            background: #222;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #444;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Anmeldung</h1>
+
+    <p class="description">
+        Bitte füllen Sie die folgenden Informationen aus.
+    </p>
+
+    <form
+        id="signupForm"
+        action="https://formpoint.lovable.app/api/public/f/9500d309-9f8e-45ea-8762-7503c974eb85"
+        method="POST"
+    >
+
+        <!-- Feld 1 -->
+        <div class="form-group">
+            <label for="email">E-Mail-Adresse *</label>
+            <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="email@example.com"
+                required
+            >
+        </div>
+
+        <!-- Feld 2 -->
+        <div class="form-group">
+            <label for="from">Quelle</label>
+            <input
+                type="text"
+                id="from"
+                name="from"
+                placeholder="z. B. Newsletter"
+            >
+        </div>
+
+        <!-- Feld 3 -->
+        <div class="form-group">
+            <label for="firstName">Vorname *</label>
+            <input
+                type="text"
+                id="firstName"
+                name="firstName"
+                placeholder="Max"
+                required
+            >
+        </div>
+
+        <!-- Feld 4 -->
+        <div class="form-group">
+            <label for="lastName">Nachname *</label>
+            <input
+                type="text"
+                id="lastName"
+                name="lastName"
+                placeholder="Mustermann"
+                required
+            >
+        </div>
+
+        <!-- Feld 5 -->
+        <div class="form-group">
+            <label for="company">Unternehmen</label>
+            <input
+                type="text"
+                id="company"
+                name="company"
+                placeholder="Musterfirma GmbH"
+            >
+        </div>
+
+        <button type="submit">
+            Anmeldung absenden
+        </button>
+
+    </form>
+</div>
+
+
+<script>
+
+    /*
+     * URL-Parameter auslesen
+     *
+     * Beispiel:
+     * https://www.example.com/?email=email@example.com&from=Newsletter
+     */
+
+    const params = new URLSearchParams(window.location.search);
+
+    const email = params.get("email");
+    const from = params.get("from");
+
+
+    /*
+     * E-Mail vorausfüllen
+     */
+
+    if (email) {
+        document.getElementById("email").value = email;
+    }
+
+
+    /*
+     * Quelle vorausfüllen
+     */
+
+    if (from) {
+        document.getElementById("from").value = from;
+    }
+
+
+    /*
+     * Formular über Formspree senden
+     */
+
+    const form =
+        document.getElementById("signupForm");
+
+    const submitButton =
+        form.querySelector("button");
+
+
+    form.addEventListener("submit", async function(event) {
+
+        event.preventDefault();
+
+        submitButton.disabled = true;
+        submitButton.textContent = "Wird gesendet...";
+
+
+        try {
+
+            const response = await fetch(
+                form.action,
+                {
+                    method: "POST",
+                    body: new FormData(form),
+
+                    headers: {
+                        "Accept": "application/json"
+                    }
+                }
+            );
+
+
+            /*
+             * Erfolgreich gesendet
+             */
+
+            if (response.ok) {
+
+                window.location.href = "danke.html";
+
+            } else {
+
+                /*
+                 * Bei einem Fehler wird lediglich
+                 * der Button wieder aktiviert.
+                 */
+
+                submitButton.disabled = false;
+                submitButton.textContent =
+                    "Anmeldung absenden";
+            }
+
+
+        } catch (error) {
+
+            /*
+             * Bei einem Netzwerkfehler ebenfalls
+             * keine Fehlermeldung anzeigen.
+             */
+
+            submitButton.disabled = false;
+            submitButton.textContent =
+                "Anmeldung absenden";
+        }
+
+    });
+
+</script>
+
+</body>
+</html>
